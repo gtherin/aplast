@@ -1,3 +1,4 @@
+from datetime import datetime
 import pandas as pd
 import numpy as np
 import scipy as sp
@@ -6,56 +7,9 @@ from scipy import ndimage
 
 import uncertainties as unc
 
-# from uncertainties.umath import log
 from scipy.optimize import minimize
 
-# gravity acceleration
-g = 9.80665  # m/s2
-
-# density of the water
-r_water = 1025  # kg/m3
-pressure_0 = 101325  # Pa
-
-# density of the ballast (lead)
-r_ballast = 11000  # kg/m3
-# density of the neoprene
-r_neo = 1230  # kg/m3
-# density of neoprene foam
-r_nfoam = 170  # kg/m3
-
-
-# General constants
-rho = 1025
-rhob = 11000
-rhon = 1230
-rhonf = 170
-
-
-def get_body_surface_area(height: float, weight: float) -> float:
-    """
-    height : height of the person in cm
-    weight : weight of the person in kg
-
-    return body_surface_area in m**2
-    """
-
-    # For the record, surface of the body parts with no swimsuit (head 9%, hands:2x1%, feet:2x1.5%)
-    # Formule de Shuter et Aslani
-    return 0.00949 * (height ** 0.655) * (weight ** 0.441)
-
-
-def get_trajectory(time_descent, time_ascent, max_depth) -> pd.Series:
-    x = np.arange(0, time_descent)
-    y = -max_depth * np.arange(0, time_descent) / time_descent
-    # y = -np.log10((np.cosh((x - 1) / 40) + 1))
-    # y = max_depth * (y - y[0]) / np.abs(y[-1] - y[0])
-
-    x2 = np.arange(0, time_ascent) + time_descent
-    y2 = max_depth * np.arange(0, time_ascent) / time_ascent - max_depth
-
-    x3 = np.append(x, x2)
-    y3 = np.append(y, y2)
-    return pd.Series(y3, index=x3)
+from .constants import *
 
 
 def get_volume_tissues(mass_body, mass_ballast, volume_suit, volume_gas, speed_d, speed_a, depth_eq_d, depth_eq_a):
@@ -147,9 +101,9 @@ def get_total_work(
     drag_coefficient : hydrodynamic drag constant
     """
 
-    force_weight = g * (mass_body + mass_ballast + rhonf * volume_suit)
-    force_archimede1 = g * rho * (mass_ballast / rhob + (rhonf * volume_suit) / rhon + volume_incompress)
-    force_archimede2 = g * rho * (volume_gas + (1 - rhonf / rhon) * volume_suit)
+    force_weight = g * (mass_body + mass_ballast + r_nfoam * volume_suit)
+    force_archimede1 = g * r_water * (mass_ballast / r_ballast + (r_nfoam * volume_suit) / r_neo + volume_incompress)
+    force_archimede2 = g * r_water * (volume_gas + (1 - r_nfoam / r_neo) * volume_suit)
 
     if force_weight <= 0:
         print(f"{surname} force_weight {force_weight} is negative")
@@ -172,13 +126,17 @@ def get_total_work(
     force_descent = force_drag_descent - force_weight + force_archimede1
     force_ascent = force_drag_ascent + force_weight - force_archimede1
 
-    pressure_depth_max = pressure_0 + depth_max * g * rho
+    pressure_depth_max = pressure_0 + depth_max * g * r_water
 
-    log_func = np.log if type(force_archimede2) == pd.Series else unc.umath.log
+    def robust_log(value):
+        if "uncertain" in str(type(value)):
+            er = np.abs(value.std_dev / value.nominal_value)
+            return unc.ufloat(np.log(value.nominal_value), er)
+        return np.log(value)
 
     if force_descent >= 0:
         print(
-            f"{surname} force_descent should be negative",
+            f"{surname} force_descent should be negative.\nOtherwise, it means that diver is not going deep enough to get out the gliding zone.",
             force_descent,
             "=",
             force_drag_descent,
@@ -202,28 +160,59 @@ def get_total_work(
         )
 
     work_core = force_ascent - force_descent - 2 * force_archimede2
-    work_core += -force_archimede2 * log_func(pressure_depth_max / pressure_0)
-    work_core += force_archimede2 * log_func(force_archimede2 / force_ascent)
-    work_core += force_archimede2 * log_func(-force_archimede2 / force_descent)
+    work_core += -force_archimede2 * robust_log(pressure_depth_max / pressure_0)
+    work_core += force_archimede2 * robust_log(force_archimede2 / force_ascent)
+    work_core += force_archimede2 * robust_log(-force_archimede2 / force_descent)
 
-    work = depth_max * force_ascent + pressure_0 * work_core / (g * rho)
+    work = depth_max * force_ascent + pressure_0 * work_core / (g * r_water)
 
     return work
 
 
 class Diver:
+    def get_speed(self, phase):
+        if f"speed_{phase}" in self.data:
+            return self.data[f"speed_{phase}"]
+
+        return self.data["depth_max"] / float(self.get_time(phase))
+
+    def get_time(self, phase):
+        dtime = self.data[f"time_{phase}"]
+        if type(dtime) in [float, int]:
+            return int(dtime)
+
+        times = str(dtime).split(":")
+        return int(float(times[0]) * 60 + float(times[1]))
+
     def __init__(self, data: dict) -> None:
+
         self.data = data
-        for c in ["surname", "depth_max", "speed_descent", "speed_ascent"]:
+        for c in [
+            "surname",
+            "depth_max",
+            "mass_body",
+            "mass_ballast",
+            "thickness_suit",
+            "volume_lungs",
+        ]:
             setattr(self, c, data[c])
-        for c in ["mass_body", "mass_ballast", "volume_suit", "volume_lungs"]:
-            setattr(self, c, data[c])
+
+        self.time_descent = self.get_time("descent")
+        self.time_ascent = self.get_time("ascent")
+
+        self.speed_descent = self.get_speed("descent")
+        self.speed_ascent = self.get_speed("ascent")
 
         self.depth_gliding_descent = unc.ufloat(
             self.data["depth_gliding_descent"], self.data["depth_gliding_descent_error"]
         )
         self.depth_gliding_ascent = unc.ufloat(
             self.data["depth_gliding_ascent"], self.data["depth_gliding_ascent_error"]
+        )
+
+        # Get suite volume in m3
+        self.volume_suit = (
+            data["volume_suit"] if "volume_suit" in data else (surface_suit := 2) * self.thickness_suit / 1000.0
         )
 
         # Tissue volume estimation
@@ -238,11 +227,6 @@ class Diver:
             self.depth_gliding_ascent,
         )
 
-        print(self.volume_lungs)
-        print(self.volume_suit)
-        print(self.volume_tissues.n)
-        print(self.mass_body / r_water)
-
         # Drag constant estimation
         self.drag_coefficient = get_drag_coefficient(
             self.volume_suit,
@@ -253,10 +237,8 @@ class Diver:
             self.depth_gliding_ascent,
         )
 
-    def minimize(self, method=None, verbose=True) -> None:
-
         # Descent work estimation
-        total_work = get_total_work(
+        self.total_work = get_total_work(
             self.surname,
             self.depth_max,
             self.mass_body,
@@ -269,18 +251,20 @@ class Diver:
             self.drag_coefficient,
         )
 
+    def minimize(self, method=None, verbose=True) -> None:
+
         # Function to minimize with respect to the user characteristics
         # mb and Tsmm variables to minimize
         # The different versions are used to estimate the uncertainty
         def f(param):
-            mb, Tsmm = param
+            mb, ts = param
             return get_total_work(
                 self.surname,
                 self.depth_max,
                 self.mass_body,
                 mb,
                 self.volume_tissues.n,
-                Tsmm / 1000 * 2,
+                ts / 1000 * 2,
                 self.volume_lungs,
                 self.speed_descent,
                 self.speed_ascent,
@@ -288,14 +272,14 @@ class Diver:
             )
 
         def fplusVt(param):
-            mb, Tsmm = param
+            mb, ts = param
             return get_total_work(
                 self.surname,
                 self.depth_max,
                 self.mass_body,
                 mb,
                 self.volume_tissues.n + self.volume_tissues.s,
-                Tsmm / 1000 * 2,
+                ts / 1000 * 2,
                 self.volume_lungs,
                 self.speed_descent,
                 self.speed_ascent,
@@ -303,14 +287,14 @@ class Diver:
             )
 
         def fminusVt(param):
-            mb, Tsmm = param
+            mb, ts = param
             return get_total_work(
                 self.surname,
                 self.depth_max,
                 self.mass_body,
                 mb,
                 self.volume_tissues.n - self.volume_tissues.s,
-                Tsmm / 1000 * 2,
+                ts / 1000 * 2,
                 self.volume_lungs,
                 self.speed_descent,
                 self.speed_ascent,
@@ -318,14 +302,14 @@ class Diver:
             )
 
         def fplusC(param):
-            mb, Tsmm = param
+            mb, ts = param
             return get_total_work(
                 self.surname,
                 self.depth_max,
                 self.mass_body,
                 mb,
                 self.volume_tissues.n,
-                Tsmm / 1000 * 2,
+                ts / 1000 * 2,
                 self.volume_lungs,
                 self.speed_descent,
                 self.speed_ascent,
@@ -333,14 +317,14 @@ class Diver:
             )
 
         def fminusC(param):
-            mb, Tsmm = param
+            mb, ts = param
             return get_total_work(
                 self.surname,
                 self.depth_max,
                 self.mass_body,
                 mb,
                 self.volume_tissues.n,
-                Tsmm / 1000 * 2,
+                ts / 1000 * 2,
                 self.volume_lungs,
                 self.speed_descent,
                 self.speed_ascent,
@@ -368,7 +352,7 @@ class Diver:
         mass_ballast_err = np.sqrt((mass_ballast_mean - mb_plusVt) ** 2 + (mass_ballast_mean - mb_plusC) ** 2)
         mass_ballast_proposal = unc.ufloat(mass_ballast_mean, mass_ballast_err)
 
-        Tsmm_best = res.x[1]
+        thickness_suit_best = res.x[1]
         Tsmm_plusVt = resplusVt.x[1]
         Tsmm_minusVt = resminusVt.x[1]
         Tsmm_plusC = resplusC.x[1]
@@ -392,21 +376,22 @@ class Diver:
             self.drag_coefficient.n,
         )
 
-        gain = work_proposal / total_work.n - 1
+        gain = work_proposal / self.total_work.n - 1
 
         if verbose:
             print(f"Best ballast weight \t\t= {mass_ballast_best} kg")
             print(f"Average optimal ballast weight \t= {mass_ballast_proposal} kg")
-            print(f"Best suite thickness \t\t= {Tsmm_best} mm")
+            print(f"Best suite thickness \t\t= {thickness_suit_best} mm")
             print(f"Average optimal suite thickness \t= {thickness_suit_proposal} mm\n")
             print(f"Performance gain = {gain * 100} %")
 
         return {
             "surname": self.surname,
-            "work": total_work.n,
+            "work": self.total_work.n,
+            "work_best": work_proposal.n,
             "mass_ballast_best": mass_ballast_best,
             "mass_ballast_proposal": mass_ballast_proposal,
-            "thickness_suit_best": Tsmm_best,
+            "thickness_suit_best": thickness_suit_best,
             "thickness_suit_proposal": thickness_suit_proposal,
             "gain": gain * 100,
         }
@@ -419,7 +404,7 @@ class Diver:
         speed_factors = [1.0]
         volume_tissues = [self.volume_tissues.n]
 
-        mass_total = self.mass_body + self.mass_ballast + rhonf * self.volume_suit
+        mass_total = self.mass_body + self.mass_ballast + r_nfoam * self.volume_suit
 
         if variable == "mass_ballast":
             mass_ballast = (index := np.linspace(0, 5, 20))
@@ -453,88 +438,3 @@ class Diver:
         ]
 
         return pd.Series(total_work, index=index)
-
-    def show(self):
-        import matplotlib.pyplot as plt
-        from matplotlib.patches import Circle
-        from matplotlib.patheffects import withStroke
-        from matplotlib.ticker import AutoMinorLocator, MultipleLocator
-
-        print(self.data)
-
-        royal_blue = [0, 20 / 256, 82 / 256]
-
-        X = np.linspace(0.5, 3.5, 100)
-        Y1 = 3 + np.cos(X)
-        Y2 = 1 + np.cos(1 + X / 0.75) / 2
-        Y3 = np.random.uniform(Y1, Y2, len(X))
-
-        fig, ax = plt.subplots(figsize=(15, 5))
-
-        ax.tick_params(which="major", width=1.0, length=10, labelsize=14)
-        ax.tick_params(which="minor", width=1.0, length=5, labelsize=10, labelcolor="0.25")
-
-        ax.grid(linestyle="--", linewidth=0.5, color=".25", zorder=-10)
-
-        # ax.plot(X, Y1, c="C0", lw=2.5, label="Blue signal", zorder=10)
-
-        max_depth = 125  # in m
-        time_descent = 120  # in sec
-        time_ascent = 94  # in sec
-
-        track = get_trajectory(time_descent, time_ascent, max_depth)
-
-        ydee = 27.5
-        xdee = track[track + ydee < 0].index[0]
-
-        yaee = 7.5
-        xaee = track[track + yaee < 0].index[-1]
-
-        track1 = np.ma.masked_where(track.index <= xdee, track)
-        track2 = np.ma.masked_where((track.index > xdee) & (track.index < xaee), track)
-
-        ax.plot(track.index, track1, track.index, track2, lw=2.5)
-
-        ax.set_title(f"Position-time estimation of {self.surname}", fontsize=20, verticalalignment="bottom")
-        ax.set_xlabel("Time in seconds", fontsize=14)
-        ax.set_ylabel("Depth in meters", fontsize=14)
-
-        def annotate(x, y, text):
-            ax.add_artist(
-                Circle(
-                    (x, y),
-                    radius=10.15,
-                    clip_on=False,
-                    linewidth=2.5,
-                    edgecolor=royal_blue + [0.6],
-                    facecolor="none",
-                    path_effects=[withStroke(linewidth=7, foreground="white")],
-                )
-            )
-
-            ax.text(
-                x,
-                y - 0.2,
-                text,
-                ha="center",
-                va="top",
-                weight="bold",
-                color=royal_blue,
-            )
-
-        annotate(xdee, -ydee, "Equilibrium")
-        annotate(xaee, -yaee, "Equilibrium")
-
-        # newax = fig.add_axes([0.2, 0.2, 0.1, 0.1], anchor="NE")
-        # newax.imshow(plt.imread("diver.png"))
-        # newax.axis("off")
-
-        newax = fig.add_axes([0.3, 0.33, 0.15, 0.15], anchor="NE")
-        newax.imshow(sp.ndimage.rotate(plt.imread("diver.png"), 50))
-        newax.axis("off")
-
-        newax = fig.add_axes([0.6, 0.33, 0.15, 0.15], anchor="NE")
-        newax.imshow(sp.ndimage.rotate(plt.imread("diver.png"), 130))
-        newax.axis("off")
-
-        plt.show()
