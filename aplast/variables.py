@@ -28,12 +28,7 @@ class Variable:
         return self.get_format_value(var)
 
     def get_input(self, input_cls):
-        # from .persist import persist
-
         smin_value, smax_value, sstep = self.get_range_values()
-        # import streamlit as st
-
-        # st.write(smin_value, smax_value, sstep)
 
         return input_cls(
             self.key if self.label is None else self.label,
@@ -41,7 +36,6 @@ class Variable:
             min_value=smin_value,
             max_value=smax_value,
             step=sstep,
-            # key=persist(self.key),
             key=self.key,
             help=self.help,
             on_change=lambda: Variable.update_cookie(self.key),
