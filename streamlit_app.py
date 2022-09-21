@@ -24,8 +24,6 @@ def get_manager():
 
 
 cookie_manager = get_manager()
-
-
 all_cookies = cookie_manager.get_all()
 
 
