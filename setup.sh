@@ -6,12 +6,22 @@ email = \"gt@guydegnol.net\"\n\
 " > ~/.streamlit/credentials.toml
 
 echo "\
-[server]\n\
-headless = true\n\
-enableCORS=false\n\
-port = $PORT\n\
-[logger]\n\
-# Level of logging: 'error', 'warning', 'info', or 'debug'.\n\
-# Default: 'info'\n\
-level = \"debug\"\n\
+[server]
+headless = true
+enableCORS=false
+port = $PORT
+
+[logger]
+# Level of logging: 'error', 'warning', 'info', or 'debug'.
+# Default: 'info'
+level = \"debug\"
+
+
+[theme]
+backgroundColor='#e6dce2'
+secondaryBackgroundColor='#f5edf2'
+
+#primaryColor='#8f2c48'
+#textColor = '#581845'
+font ='sans serif'
 " > ~/.streamlit/config.toml
