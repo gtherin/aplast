@@ -1,8 +1,13 @@
 import numpy as np
 import pandas as pd
 import scipy as sp
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
+from matplotlib.patheffects import withStroke
 
 import os
+
+from . import constants
 
 
 def get_trajectory(time_descent, time_ascent, max_depth) -> pd.Series:
@@ -50,9 +55,6 @@ def show_dynamic(diver):
 
 
 def show(diver):
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import Circle
-    from matplotlib.patheffects import withStroke
 
     royal_blue = [0, 20 / 256, 82 / 256]
 
@@ -80,7 +82,7 @@ def show(diver):
 
     ax.plot(track.index, track1, track.index, track2, lw=2.5)
 
-    ax.set_title(f"Position-time estimation of {diver.surname}", fontsize=20, verticalalignment="bottom")
+    ax.set_title(f"Position-time estimation", fontsize=20, verticalalignment="bottom")
     ax.set_xlabel("Time in seconds", fontsize=14)
     ax.set_ylabel("Depth in meters", fontsize=14)
 
@@ -122,4 +124,4 @@ def show(diver):
     newax.imshow(sp.ndimage.rotate(plt.imread(filename), 130))
     newax.axis("off")
 
-    plt.show()
+    # plt.show()

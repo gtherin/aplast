@@ -18,10 +18,10 @@ level = \"debug\"
 
 
 [theme]
-backgroundColor='#e6dce2'
-secondaryBackgroundColor='#f5edf2'
+backgroundColor='#F0FDFA11'
+secondaryBackgroundColor='#4F77AA11'
 
-#primaryColor='#8f2c48'
-#textColor = '#581845'
+primaryColor='#4F77AA'
+textColor = '#581845'
 font ='sans serif'
 " > ~/.streamlit/config.toml

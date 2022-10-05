@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+
+
 # gravity acceleration
 g = 9.80665  # m/s2
 
@@ -40,8 +43,6 @@ def show_foam_density(df):
 
     df = df.sort_values("mass_suit_exp")
 
-    import matplotlib.pyplot as plt
-
     fig, ax = plt.subplots(figsize=(15, 5))
 
     ax.set_title(f"Suit weight estimation from density (default is {r_nfoam:.0f} kg/m3)", fontsize=16)
@@ -55,3 +56,50 @@ def show_foam_density(df):
     ax.scatter(df["mass_suit"], df["mass_suit_exp"], s=60, label=f"Comparison with given data")
 
     fig.legend(loc=4, fontsize=16)
+
+
+background_color = "#F0FDFA11"  # cdcdcd
+background_color2 = "#4F77AA11"
+
+
+def get_color(discipline):
+    colors = {
+        "swimming": "#581845",
+        "cycling": "#C70039",
+        "running": "#FF5733",
+        "axis": "#4F77AA",
+    }
+    return colors[discipline] if discipline in colors else "black"
+
+
+def set_style():
+    plt.rcParams["axes.grid"] = True
+    plt.rcParams["axes.edgecolor"] = get_color("axis")
+    plt.rcParams["axes.labelcolor"] = get_color("axis")
+    plt.rcParams["axes.titlecolor"] = get_color("axis")
+    plt.rcParams["axes.facecolor"] = background_color
+    plt.rcParams["figure.edgecolor"] = get_color("axis")
+    plt.rcParams["figure.facecolor"] = background_color
+    plt.rcParams["grid.color"] = "white"
+    plt.rcParams["legend.facecolor"] = background_color
+    plt.rcParams["legend.edgecolor"] = background_color
+    # plt.rcParams["text.color"] = "white"
+    plt.rcParams["xtick.color"] = get_color("axis")
+    plt.rcParams["ytick.color"] = get_color("axis")
+
+    plt.rcParams["font.size"] = 16
+    # plt.rcParams["axes.labelsize"] = "medium"
+    plt.rcParams["lines.linewidth"] = 4
+
+    # ax.grid(True, axis="y", color="white")
+
+    from cycler import cycler
+
+    # mpl.rcParams['axes.prop_cycle'] = cycler(color='bgrcmyk')
+    # mpl.rcParams['axes.prop_cycle'] = cycler(color='bgrcmyk')
+    plt.rcParams["axes.prop_cycle"] = cycler(
+        color=[get_color(c) for c in ["swimming", "cycling", "running", "The end"]]
+    )
+
+
+set_style()

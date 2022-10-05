@@ -39,6 +39,8 @@ aplast.set_var_cookies(all_cookies)
 
 def main():
 
+    st.warning(f"⚠️ Aplast is in beta mode 🚧 !")
+
     with st.expander("Diving performance", expanded=True):
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -138,9 +140,9 @@ def main():
 
         # st.plotly_chart(aplast.trajectory.show_dynamic(d))
         st.pyplot(aplast.trajectory.show(d))
-        st.pyplot(aplast.trajectory.show(d_best))
+        # st.pyplot(aplast.trajectory.show(d_best))
 
-    with st.expander("Cookies management", expanded=True):
+    with st.expander("Cookies management", expanded=False):
         st.write(all_cookies)
         cookie = st.text_input("Cookie", key="2")
         if st.button("Delete"):
