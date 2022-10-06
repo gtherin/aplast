@@ -1,18 +1,18 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import streamlit as st
 import datetime
 import aplast
 import time
 import extra_streamlit_components as stx
-
-from streamlit_folium import folium_static
 import os
 import streamlit as st
 
 
 import datetime
+
+import aplast
+from aplast import strapp
 
 
 st.set_option("deprecation.showPyplotGlobalUse", False)
@@ -33,8 +33,8 @@ def update_cookie(key):
     cookie_manager.set(key, fval, expires_at=datetime.datetime(year=2023, month=2, day=2))
 
 
-aplast.set_var_on_change_function(update_cookie)
-aplast.set_var_cookies(all_cookies)
+# strapp.set_var_on_change_function(update_cookie)
+# strapp.set_var_cookies(all_cookies)
 
 
 def main():
@@ -142,11 +142,8 @@ def main():
         st.pyplot(aplast.trajectory.show(d))
         # st.pyplot(aplast.trajectory.show(d_best))
 
-    with st.expander("Cookies management", expanded=False):
-        st.write(all_cookies)
-        cookie = st.text_input("Cookie", key="2")
-        if st.button("Delete"):
-            cookie_manager.delete(cookie)
+    # Show about section
+    strapp.about.get_section(all_cookies, cookie_manager)
 
 
 if __name__ == "__main__":

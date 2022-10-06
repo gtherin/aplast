@@ -13,8 +13,7 @@ port = $PORT
 
 [logger]
 # Level of logging: 'error', 'warning', 'info', or 'debug'.
-# Default: 'info'
-level = \"debug\"
+level = \"info\"
 
 
 [theme]
