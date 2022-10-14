@@ -21,12 +21,13 @@ def get_parameter(name="PROJECT_NAME"):
 
 
 def get_version():
-    for line in read(f"{get_parameter()}/__init__.py").splitlines():
-        if line.startswith("__version__"):
-            delim = '"' if '"' in line else "'"
-            return line.split(delim)[1]
-    else:
-        raise RuntimeError("Unable to find version string.")
+    for filename in [f"{get_parameter()}/{f}" for f in ["__version__.py", "__init__.py"]]:
+        if os.path.exists(filename):
+            for line in read(filename).splitlines():
+                if line.startswith("__version__"):
+                    delim = '"' if '"' in line else "'"
+                    return line.split(delim)[1]
+    raise RuntimeError("Unable to find version string.")
 
 
 def get_console_scripts():
