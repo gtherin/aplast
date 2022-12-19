@@ -1,0 +1,12 @@
+# Pycharm
+.idea/
+**__pycache__/
+
+notebooks/.ipynb_checkpoints/*
+.vscode/*
+
+# Packages
+*.egg
+*.egg-info
+**.pyc
+Makefile
