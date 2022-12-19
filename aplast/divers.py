@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 
@@ -6,7 +7,14 @@ from .constants import *
 
 
 def get_data(surname=None, raw=False):
-    df = pd.read_csv("freediving_data.csv")
+
+    filename = "freediving_data.csv"
+    for d in [".", "aplast/notebooks", "../aplast/notebooks"]:
+        if os.path.exists(f"{d}/freediving_data.csv"):
+            filename = f"{d}/freediving_data.csv"
+            break
+
+    df = pd.read_csv(filename)
 
     df.columns = [
         "timestamp",
