@@ -28,11 +28,11 @@ def get_volume_tissues(mass_body, mass_ballast, volume_suit, volume_gas, speed_d
     return tissues volume +- error
     """
 
-    speed2 = speed_a ** 2 + speed_d ** 2
+    speed2 = speed_a**2 + speed_d**2
     pressure_eq_d = pressure_0 + depth_eq_d * g * r_water
     pressure_eq_a = pressure_0 + depth_eq_a * g * r_water
-    press_speed2_d = pressure_eq_d * speed_d ** 2
-    press_speed2_a = pressure_eq_a * speed_a ** 2
+    press_speed2_d = pressure_eq_d * speed_d**2
+    press_speed2_a = pressure_eq_a * speed_a**2
     ptot = pressure_eq_a * pressure_eq_d * r_neo * speed2
 
     def get_func(depth):
@@ -63,7 +63,7 @@ def get_drag_coefficient(volume_suit, volume_gas, speed_d, speed_a, depth_eq_d, 
 
     """
 
-    speed2 = speed_a ** 2 + speed_d ** 2
+    speed2 = speed_a**2 + speed_d**2
     mass_toid = r_neo * (volume_gas + volume_suit) - r_nfoam * volume_suit
     volume_toid = mass_toid / r_neo
 
@@ -114,8 +114,8 @@ def get_total_work(
     if force_archimede2 <= 0:
         print(f"{surname} force_archimede2 {force_archimede2} is negative")
 
-    force_drag_descent = drag_coefficient * speed_descent ** 2
-    force_drag_ascent = drag_coefficient * speed_ascent ** 2
+    force_drag_descent = drag_coefficient * speed_descent**2
+    force_drag_ascent = drag_coefficient * speed_ascent**2
 
     if force_drag_descent <= 0:
         print(f"{surname} force_drag_descent {force_drag_descent} is negative")
