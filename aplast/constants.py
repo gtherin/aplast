@@ -1,4 +1,6 @@
+import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 
 # gravity acceleration
@@ -27,7 +29,7 @@ def get_body_surface_area(height: float, weight: float) -> float:
 
     # For the record, surface of the body parts with no swimsuit (head 9%, hands:2x1%, feet:2x1.5%)
     # Formule de Shuter et Aslani
-    return 0.00949 * (height ** 0.655) * (weight ** 0.441)
+    return 0.00949 * (height**0.655) * (weight**0.441)
 
 
 def show_foam_density(df):
@@ -103,3 +105,9 @@ def set_style():
 
 
 set_style()
+
+
+def get_file(filename):
+    for d in [".", "aplast/notebooks", "../aplast/notebooks", "aplast/aplast", "../aplast/aplast"]:
+        if os.path.exists(f"{d}/{filename}"):
+            return f"{d}/{filename}"

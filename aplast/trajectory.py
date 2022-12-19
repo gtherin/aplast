@@ -112,16 +112,17 @@ def show(diver):
     annotate(xdee, -ydee, "Equilibrium")
     annotate(xaee, -yaee, "Equilibrium")
 
-    for f in ["diver.png", "aplast/diver.png", "../aplast/diver.png"]:
-        if os.path.exists(f):
-            filename = f
+    filename = constants.get_file("diver.png")
 
-    newax = fig.add_axes([0.3, 0.33, 0.15, 0.15], anchor="NE")
-    newax.imshow(sp.ndimage.rotate(plt.imread(filename), 50))
-    newax.axis("off")
+    print(filename)
 
-    newax = fig.add_axes([0.6, 0.33, 0.15, 0.15], anchor="NE")
-    newax.imshow(sp.ndimage.rotate(plt.imread(filename), 130))
-    newax.axis("off")
+    if filename:
+        newax = fig.add_axes([0.3, 0.33, 0.15, 0.15], anchor="NE")
+        newax.imshow(sp.ndimage.rotate(plt.imread(filename), 50))
+        newax.axis("off")
+
+        newax = fig.add_axes([0.6, 0.33, 0.15, 0.15], anchor="NE")
+        newax.imshow(sp.ndimage.rotate(plt.imread(filename), 130))
+        newax.axis("off")
 
     # plt.show()

@@ -1,4 +1,3 @@
-import os
 import numpy as np
 import pandas as pd
 
@@ -8,11 +7,7 @@ from .constants import *
 
 def get_data(surname=None, raw=False):
 
-    filename = "freediving_data.csv"
-    for d in [".", "aplast/notebooks", "../aplast/notebooks"]:
-        if os.path.exists(f"{d}/freediving_data.csv"):
-            filename = f"{d}/freediving_data.csv"
-            break
+    filename = get_file("freediving_data.csv")
 
     df = pd.read_csv(filename)
 
