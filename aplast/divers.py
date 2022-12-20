@@ -5,7 +5,7 @@ from .diver import *
 from .constants import *
 
 
-def get_data(surname=None, raw=False):
+def get_data(surname=None, raw=False, clean=True):
 
     filename = get_file("freediving_data.csv")
 
@@ -102,7 +102,8 @@ def get_data(surname=None, raw=False):
         df["volume_lungs"] = df["volume_lungs"] / 1000.0
 
         # Remove problematic data
-        df = df[~df.surname.isin(["Lauper", "Carbone", "Sodde", "Underwater Photography & Media"])]
+        if clean:
+            df = df[~df.surname.isin(["Lauper", "Carbone", "Sodde", "Underwater Photography & Media"])]
 
     if surname is None:
         return df

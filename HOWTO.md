@@ -13,10 +13,9 @@ heroku ps:scale web=0
 heroku ps:scale web=1
 heroku restart
 
-trianer-push
-trianer-vetruve && git add . && git commit -m "Some push" && git push heroku master
+git add . && git commit -m "Some push" && git push heroku master
 heroku logs --tail
-heroku builds:cache:purge -a fathomless-brook-99194  --confirm fathomless-brook-99194
+heroku builds:cache:purge -a applast  --confirm applast
 
 killall streamlit
 

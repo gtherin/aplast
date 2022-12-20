@@ -396,7 +396,7 @@ class Diver:
             "gain": gain * 100,
         }
 
-    def get_total_work(self, variable="mass_ballast"):
+    def get_total_work(self, variable=None):
 
         volume_lungs = [self.volume_lungs]
         mass_ballast = [self.mass_ballast]
@@ -414,8 +414,10 @@ class Diver:
             speed_factors = (index := np.linspace(0.8, 1.2, 10))
         elif variable == "Rt":
             volume_tissues = (mass_total / r_water) * (index := np.linspace(0.8, 1.2, 10))
-        else:
+        elif variable == "volume_lungs":
             volume_lungs = (index := np.linspace(0, 10, 20))
+        else:
+            index = None
 
         total_work = [
             get_total_work(
@@ -436,5 +438,8 @@ class Diver:
             for sf in speed_factors
             for vt in volume_tissues
         ]
+
+        if index is None:
+            return total_work
 
         return pd.Series(total_work, index=index)
