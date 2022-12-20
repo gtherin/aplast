@@ -1,6 +1,6 @@
 #### [TODO list]
 
-- Investigate results with *martino*, [jules](jules), [@guillaume]
+- Investigate results with *martino*, [@jules](jules), [@guillaume]
 - Try to minimize ballast weight given the thickness suit [@guillaume]
 - Audit of the code *martino*
 
