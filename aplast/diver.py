@@ -403,6 +403,7 @@ class Diver:
         depth_max = [self.depth_max]
         speed_factors = [1.0]
         volume_tissues = [self.volume_tissues.n]
+        volume_suits = [self.volume_suit]
 
         mass_total = self.mass_body + self.mass_ballast + r_nfoam * self.volume_suit
 
@@ -416,6 +417,8 @@ class Diver:
             volume_tissues = (mass_total / r_water) * (index := np.linspace(0.8, 1.2, 10))
         elif variable == "volume_lungs":
             volume_lungs = (index := np.linspace(0, 10, 20))
+        elif variable == "volume_suit":
+            volume_suits = (index := np.linspace(0, 0.015, 20))
         else:
             index = None
 
@@ -426,7 +429,7 @@ class Diver:
                 self.mass_body,
                 mb,
                 vt,
-                self.volume_suit,
+                vs,
                 l,
                 self.speed_descent * sf,
                 self.speed_ascent * sf,
@@ -437,6 +440,7 @@ class Diver:
             for dm in depth_max
             for sf in speed_factors
             for vt in volume_tissues
+            for vs in volume_suits
         ]
 
         if index is None:

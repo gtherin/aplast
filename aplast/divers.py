@@ -5,7 +5,7 @@ from .diver import *
 from .constants import *
 
 
-def get_data(surname=None, raw=False, clean=True):
+def get_data(surname=None, raw=False, clean=True, query=None):
 
     filename = get_file("freediving_data.csv")
 
@@ -68,21 +68,7 @@ def get_data(surname=None, raw=False, clean=True):
                         "mass_body": 78,  # in kg
                         "mass_ballast": 1,  # in kg
                         "thickness_suit": 1.5,  # in mm
-                    },
-                    {  # Is it the same person as Stephane T ?
-                        "surname": "Stephane Tourreau",
-                        "depth_max": 103,  # in m
-                        "time_descent": 165,  # TO BE CHECKED with TINO
-                        "time_ascent": 165,  # TO BE CHECKED with TINO
-                        "depth_gliding_descent": 55,  # in m
-                        "depth_gliding_descent_error": 5,  # in m
-                        "depth_gliding_ascent": 10,  # in m
-                        "depth_gliding_ascent_error": 2.5,  # in m
-                        "volume_lungs": 8,  # in l
-                        "mass_body": 71,  # in kg
-                        "mass_ballast": 1.5,  # in kg
-                        "thickness_suit": 3,  # in mm
-                    },
+                    }
                 ]
             ),
         ]
@@ -104,6 +90,9 @@ def get_data(surname=None, raw=False, clean=True):
         # Remove problematic data
         if clean:
             df = df[~df.surname.isin(["Lauper", "Carbone", "Sodde", "Underwater Photography & Media"])]
+
+        if query:
+            df = df.query(query)
 
     if surname is None:
         return df
