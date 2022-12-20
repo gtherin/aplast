@@ -1,8 +1,9 @@
 #### [TODO list]
 
-- Investigate results with ( [@Martino](), [@Jules](), [@Guillaume]() )
-- Try to minimize ballast weight given the thickness suit ( [@Guillaume]() )
+- Investigate results ( [@Martino](), [@Jules](), [@Guillaume]() )
+- Try to minimize ballast weight for given the thickness suit ( [@Guillaume]() )
 - Audit of the code ( [@Martino]() )
+- Start to write some doc ( [@Martino](), [@Jules](), [@Guillaume]() )
 
 #### [1.2.0] - 2022-10-12
 - Start analyzing the data ( [@Martino]() [@Guillaume]() )
