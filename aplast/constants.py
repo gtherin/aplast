@@ -108,6 +108,6 @@ set_style()
 
 
 def get_file(filename):
-    for d in [".", "aplast/notebooks", "../aplast/notebooks", "aplast/aplast", "../aplast/aplast"]:
+    for d in [".", "aplast/notebooks", "../aplast/notebooks", "aplast/aplast", "../aplast/aplast", "../aplast"]:
         if os.path.exists(f"{d}/{filename}"):
             return f"{d}/{filename}"

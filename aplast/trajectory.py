@@ -64,7 +64,6 @@ def show(diver):
 
     ax.grid(linestyle="--", linewidth=0.5, color=".25", zorder=-10)
 
-    print(diver.time_ascent)
     depth_max = diver.depth_max  # in m
     time_descent = diver.time_descent  # in sec
     time_ascent = diver.time_ascent  # in sec
@@ -113,8 +112,6 @@ def show(diver):
     annotate(xaee, -yaee, "Equilibrium")
 
     filename = constants.get_file("diver.png")
-
-    print(filename)
 
     if filename:
         newax = fig.add_axes([0.3, 0.33, 0.15, 0.15], anchor="NE")

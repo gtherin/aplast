@@ -96,14 +96,18 @@ def get_total_work(
     volume_incompress   = get_volume_tissues(mass_body, mass_ballast, volume_suit, volume_gas, speed_descent, speed_a, depth_eq_d, depth_eq_a) : volume of the incompressible (liquid and solid part) part of the body
     volume_suit   = volume of the suit
     volume_gas   = volume_lungs : volume of the compressible (gaseous part)  part of the body at p_0 pressure
-    speed_d   = descet speed : descent speed
-    speed_a   = ascent speed : ascension speed
+    speed_d   = descent speed
+    speed_a   = ascension speed
     drag_coefficient : hydrodynamic drag constant
     """
 
     force_weight = g * (mass_body + mass_ballast + r_nfoam * volume_suit)
+
     force_archimede1 = g * r_water * (mass_ballast / r_ballast + (r_nfoam * volume_suit) / r_neo + volume_incompress)
     force_archimede2 = g * r_water * (volume_gas + (1 - r_nfoam / r_neo) * volume_suit)
+
+    force_drag_descent = drag_coefficient * speed_descent**2
+    force_drag_ascent = drag_coefficient * speed_ascent**2
 
     if force_weight <= 0:
         print(f"{surname} force_weight {force_weight} is negative")
@@ -113,9 +117,6 @@ def get_total_work(
 
     if force_archimede2 <= 0:
         print(f"{surname} force_archimede2 {force_archimede2} is negative")
-
-    force_drag_descent = drag_coefficient * speed_descent**2
-    force_drag_ascent = drag_coefficient * speed_ascent**2
 
     if force_drag_descent <= 0:
         print(f"{surname} force_drag_descent {force_drag_descent} is negative")
@@ -135,29 +136,20 @@ def get_total_work(
         return np.log(value)
 
     if force_descent >= 0:
+        # force_descent should < 0. Otherwise, it means that diver is not going deep enough to get out the gliding zone.
         print(
-            f"{surname} force_descent should be negative.\nOtherwise, it means that diver is not going deep enough to get out the gliding zone.",
-            force_descent,
-            "=",
-            force_drag_descent,
-            "-",
-            force_weight,
-            "+",
-            force_archimede1,
-            "; archimede2=",
-            force_archimede2,
+            f"{surname} force_desc should be < 0 mb({mass_ballast}) vl({volume_gas}) vi({volume_incompress:.3f}):",
+            f"desc({force_descent})=drag({force_drag_descent}) - wei({force_weight:.0f}) + arch1({force_archimede1:.0f}); arch2={force_archimede2:.0f}",
         )
         force_descent *= -1
 
     if force_ascent <= 0:
+        # force_ascent should > 0. Otherwise, it means that diver is not going deep enough to get out the gliding zone.
         print(
-            f"{surname} force_ascent",
-            force_archimede2,
-            force_ascent,
-            force_drag_ascent,
-            force_weight,
-            force_archimede1,
+            f"{surname} force_asc should > 0 mb({mass_ballast}) vl({volume_gas}) vi({volume_incompress:.3f}):",
+            f"asc({force_ascent})=drag({force_drag_ascent}) + wei({force_weight:.0f}) - arch1({force_archimede1:.0f}); arch2={force_archimede2:.0f}",
         )
+        force_ascent *= -1
 
     work_core = force_ascent - force_descent - 2 * force_archimede2
     work_core += -force_archimede2 * robust_log(pressure_depth_max / pressure_0)
@@ -187,14 +179,7 @@ class Diver:
     def __init__(self, data: dict) -> None:
 
         self.data = data
-        for c in [
-            "surname",
-            "depth_max",
-            "mass_body",
-            "mass_ballast",
-            "thickness_suit",
-            "volume_lungs",
-        ]:
+        for c in ["surname", "depth_max", "mass_body", "mass_ballast", "thickness_suit", "volume_lungs"]:
             setattr(self, c, data[c])
 
         self.time_descent = self.get_time("descent")
@@ -416,7 +401,7 @@ class Diver:
         elif variable == "Rt":
             volume_tissues = (mass_total / r_water) * (index := np.linspace(0.8, 1.2, 10))
         elif variable == "volume_lungs":
-            volume_lungs = (index := np.linspace(0, 10, 20))
+            volume_lungs = (index := np.linspace(2, 10, 20))
         elif variable == "volume_suit":
             volume_suits = (index := np.linspace(0, 0.015, 20))
         else:
@@ -446,4 +431,6 @@ class Diver:
         if index is None:
             return total_work
 
-        return pd.Series(total_work, index=index)
+        df = (pd.DataFrame([index, total_work], index=[variable, "Work (Joules)"]).T).set_index(variable)
+
+        return df
