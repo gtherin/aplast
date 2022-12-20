@@ -1,11 +1,11 @@
 #### [TODO list]
 
-- Investigate results with *martino*, [@jules](jules), [@guillaume]( )
-- Try to minimize ballast weight given the thickness suit [@guillaume]()
-- Audit of the code *martino*
+- Investigate results with ( [@Martino](), [@Jules](), [@Guillaume]() )
+- Try to minimize ballast weight given the thickness suit ( [@Guillaume]() )
+- Audit of the code ( [@Martino]() )
 
 #### [1.2.0] - 2022-10-12
-- Start analyzing the data with Martino
+- Start analyzing the data ( [@Martino]() [@Guillaume]() )
 
 #### [1.1.0] - 2022-10-06
 - Have a specific directory for streamlit library
