@@ -20,3 +20,5 @@ heroku builds:cache:purge -a applast  --confirm applast
 killall streamlit
 
 python setup.py develop
+
+git remote set-url heroku https://git.heroku.com/aplast.git
