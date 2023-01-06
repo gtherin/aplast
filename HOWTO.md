@@ -15,7 +15,7 @@ heroku restart
 
 git add . && git commit -m "Some push" && git push heroku master
 heroku logs --tail
-heroku builds:cache:purge -a applast  --confirm applast
+heroku builds:cache:purge -a aplast --confirm aplast
 
 killall streamlit
 
