@@ -46,6 +46,7 @@ setup(
     version=get_version(),
     packages=find_packages(),
     author="guydegnol",
+    license="https://github.com/guydegnol/guydegnol-privacy/blob/main/privacy-policy.md",
     # Dependencies
     install_requires=["pandas"],
     # Script info
