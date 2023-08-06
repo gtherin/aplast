@@ -2,27 +2,20 @@
 The aim of this package is help divers to optimize their gear.
 
 
-### Procfile
-web: gunicorn gettingstarted.wsgi
-web: sh setup.sh && streamlit run app.py
+### Quick Installation guide
 
-### Heroku
-
-To test the package localy
 ```bash
-heroku local
+# 📋 Clone the code from github
+git clone https://github.com/guydegnol/aplast
+# 🐋 Build the app with docker
+docker build . -t aplast-image
+# 🤿 Launch the web app on the local server (opened on port 8503)
+docker run -p 8503:8503 --name aplast-container aplast-image
+
+# To restart the local container
+docker restart aplast-container
+
+# Kill all containers
+docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
 ```
 
-heroku ps:scale web=0
-heroku ps:scale web=1
-heroku restart
-
-git add . && git commit -m "Some push" && git push heroku master
-heroku logs --tail
-heroku builds:cache:purge -a aplast --confirm aplast
-
-killall streamlit
-
-python setup.py develop
-
-git remote set-url heroku https://git.heroku.com/aplast.git

@@ -9,7 +9,7 @@ echo "\
 [server]
 headless = true
 enableCORS=false
-port = $PORT
+port = 8503
 
 [logger]
 # Level of logging: 'error', 'warning', 'info', or 'debug'.
