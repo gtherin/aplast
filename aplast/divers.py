@@ -5,10 +5,7 @@ from .diver import *
 from .constants import *
 
 
-def get_data(surname=None, raw=False, clean=True, query=None):
-
-    filename = get_file("freediving_data.csv")
-
+def get_data(surname=None, raw=False, clean=True, query=None, filename="freediving_data.csv"):
     df = pd.read_csv(filename)
 
     df.columns = [
