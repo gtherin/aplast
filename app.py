@@ -38,7 +38,6 @@ def update_cookie(key):
 
 
 def main():
-
     st.warning(f"⚠️ Aplast is in beta mode 🚧 !")
 
     with st.expander("Diving performance", expanded=True):
@@ -52,7 +51,7 @@ def main():
         with col3:
             time_ascent = aplast.get_var_slider("time_ascent")
 
-    with st.expander("Gliding charecteristics", expanded=True):
+    with st.expander("Gliding characteristics", expanded=True):
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             depth_gliding_descent = aplast.get_var_number("depth_gliding_descent")
