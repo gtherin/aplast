@@ -1,12 +1,11 @@
-import numpy as np
 import pandas as pd
 
 from .diver import *
 from .constants import *
 
 
-def get_data(surname=None, raw=False, clean=True, query=None, filename="freediving_data.csv"):
-    df = pd.read_csv(filename)
+def get_data(surname=None, raw=False, clean=True, query=None):
+    df = pd.read_csv(Diver.database_filename)
 
     df.columns = [
         "timestamp",

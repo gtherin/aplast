@@ -162,6 +162,8 @@ def get_total_work(
 
 
 class Diver:
+    database_filename = "freediving_data.csv"
+
     def get_speed(self, phase):
         if f"speed_{phase}" in self.data:
             return self.data[f"speed_{phase}"]
@@ -177,7 +179,6 @@ class Diver:
         return int(float(times[0]) * 60 + float(times[1]))
 
     def __init__(self, data: dict) -> None:
-
         self.data = data
         for c in ["surname", "depth_max", "mass_body", "mass_ballast", "thickness_suit", "volume_lungs"]:
             setattr(self, c, data[c])
@@ -237,7 +238,6 @@ class Diver:
         )
 
     def minimize(self, method=None, verbose=True) -> None:
-
         # Function to minimize with respect to the user characteristics
         # mb and Tsmm variables to minimize
         # The different versions are used to estimate the uncertainty
@@ -382,7 +382,6 @@ class Diver:
         }
 
     def get_total_work(self, variable=None):
-
         volume_lungs = [self.volume_lungs]
         mass_ballast = [self.mass_ballast]
         depth_max = [self.depth_max]
