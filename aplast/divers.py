@@ -95,7 +95,11 @@ def get_data(surname=None, raw=False, clean=True, query=None):
     elif type(surname) == int:
         return Diver(df.iloc[surname].to_dict())
 
-    return Diver(df.query(f"surname == '{surname}'").iloc[0].to_dict())
+    d = df.query(f"surname == '{surname}'")
+    if d.empty:
+        raise ValueError(f"diver '{surname}' is unknown")
+
+    return Diver(d.iloc[0].to_dict())
 
 
 def minimize():
