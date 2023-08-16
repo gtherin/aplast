@@ -1,0 +1,9 @@
+cff-version: 1.3.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Therin Trassinelli"
+  given-names: "Guillaume Martino"
+title: "Help APnea divers to optimize their gear (balLAST, suit)"
+version: 1.2.3
+date-released: 2023-08-16
+url: "https://github.com/guydegnol/aplast"
