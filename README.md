@@ -3,6 +3,7 @@ Athletes should fill their diving performances 📉, their gliding characteristi
 
 **It will finally generate gear recommendations.** ⚓ 
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/guydegnol/aplast/main/app.py) 
 [![CC-by-nc-sa license](https://badgen.net/badge/icon/CC%20by-nc-sa?label=Licence)](https://creativecommons.org/licenses/by-nc-sa/4.0)
 
 ### Quick Installation guide
@@ -25,9 +26,6 @@ docker restart aplast-container
 docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
 ```
 
-# options-2-trees
-
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/guydegnol/aplast/main/app.py) 
 
 https://github.com/guydegnol/aplast/edit/master/README.md
 
