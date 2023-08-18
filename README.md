@@ -3,7 +3,7 @@ Athletes should fill their diving performances 📉, their gliding characteristi
 
 **It will finally generate gear recommendations.** ⚓ 
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://trianer.streamlit.app/) 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://aplast.streamlit.app/) 
 [![CC-by-nc-sa license](https://badgen.net/badge/icon/CC%20by-nc-sa?label=Licence)](https://creativecommons.org/licenses/by-nc-sa/4.0)
 
 ### Quick Installation guide
@@ -25,13 +25,6 @@ docker restart aplast-container
 # Kill all containers
 docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
 ```
-
-
-https://github.com/guydegnol/aplast/edit/master/README.md
-
-A graphical visualisation of the Cox-Ross-Rubinstein options pricing model made interactive with Streamlit. Feel free to play around with the parameters or the source code!
-
-https://user-images.githubusercontent.com/79203609/120888876-93f50d00-c5f2-11eb-91a0-bef1c410602d.mp4
 
 
 
