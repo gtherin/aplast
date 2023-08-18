@@ -3,7 +3,7 @@ Athletes should fill their diving performances 📉, their gliding characteristi
 
 **It will finally generate gear recommendations.** ⚓ 
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/guydegnol/aplast/main/app.py) 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://trianer.streamlit.app/) 
 [![CC-by-nc-sa license](https://badgen.net/badge/icon/CC%20by-nc-sa?label=Licence)](https://creativecommons.org/licenses/by-nc-sa/4.0)
 
 ### Quick Installation guide
