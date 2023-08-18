@@ -25,5 +25,15 @@ docker restart aplast-container
 docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
 ```
 
+# options-2-trees
+
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/guydegnol/aplast/main/app.py) 
+
+https://github.com/guydegnol/aplast/edit/master/README.md
+
+A graphical visualisation of the Cox-Ross-Rubinstein options pricing model made interactive with Streamlit. Feel free to play around with the parameters or the source code!
+
+https://user-images.githubusercontent.com/79203609/120888876-93f50d00-c5f2-11eb-91a0-bef1c410602d.mp4
+
 
 
