@@ -9,13 +9,13 @@ def gl(name):
 
 
 def get_expander():
-    from ..__version__ import __version__ as version
-
-    return st.expander(f"ℹ️ - {gl('about_app')} (pyversion={version})", expanded=False)
+    return st.expander(
+        f"ℹ️ - {gl('About app')} (📧 [Guillaume](https://www.linkedin.com/in/guillaume-therin-56665217/) [Martino](https://www.linkedin.com/in/martino-trassinelli-89a459277/))",
+        expanded=False,
+    )
 
 
 def get_content(all_cookies, cookie_manager):
-
     from ..__version__ import __version__ as version
 
     st.success(f"Version {version}")

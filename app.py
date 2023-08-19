@@ -38,7 +38,8 @@ aplast.Variable.update_cookie = update_cookie
 
 
 def main():
-    st.warning(f"⚠️ Aplast is in beta mode 🚧 !")
+    # Show about section
+    strapp.about.get_section(all_cookies, cookie_manager)
 
     with st.expander("Diving performance", expanded=True):
         col1, col2, col3 = st.columns(3)
@@ -140,9 +141,6 @@ def main():
         # st.plotly_chart(aplast.trajectory.show_dynamic(d))
         st.pyplot(aplast.trajectory.show(d))
         # st.pyplot(aplast.trajectory.show(d_best))
-
-    # Show about section
-    strapp.about.get_section(all_cookies, cookie_manager)
 
 
 if __name__ == "__main__":
