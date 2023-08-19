@@ -11,7 +11,6 @@ import streamlit as st
 
 import datetime
 
-import aplast
 from aplast import strapp
 
 
@@ -33,6 +32,7 @@ def update_cookie(key):
     cookie_manager.set(key, fval, expires_at=datetime.datetime(year=2023, month=2, day=2))
 
 
+aplast.Variable.update_cookie = update_cookie
 # strapp.set_var_on_change_function(update_cookie)
 # strapp.set_var_cookies(all_cookies)
 
