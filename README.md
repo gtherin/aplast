@@ -6,7 +6,11 @@ Athletes should fill their diving performances 📉, their gliding characteristi
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://aplast.streamlit.app/) 
 [![CC-by-nc-sa license](https://badgen.net/badge/icon/CC%20by-nc-sa?label=Licence)](https://creativecommons.org/licenses/by-nc-sa/4.0)
 
-### Quick Installation guide
+
+https://github.com/guydegnol/aplast/assets/82407580/3116c847-bbb2-4f0f-b525-f932c4a091e4
+
+
+### Quick local Installation guide
 
 ```bash
 # 📋 Clone the code from github
