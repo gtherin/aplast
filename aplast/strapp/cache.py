@@ -6,7 +6,7 @@ import extra_streamlit_components as stx
 from ..variable import Variable
 
 
-@st.cache(allow_output_mutation=True, suppress_st_warning=True)
+@st.cache(allow_output_mutation=True, suppress_st_warning=False)
 def get_manager():
     return stx.CookieManager()
 
@@ -21,7 +21,6 @@ def get_key(key):
 
 def update_cookie(name):
     try:
-
         val = st.session_state[name]
         if type(val) == datetime.time:
             fval = str(val)
@@ -33,17 +32,15 @@ def update_cookie(name):
             fval = val
 
         Cache.cookie_manager.set(get_key(name), fval, expires_at=datetime.datetime(year=2023, month=2, day=2))
+        os.environ[name] = str(fval)
     except Exception as e:
-        pass
-        # st.error(f"{key} {fval}")
-        # st.error(e)
+        st.error(f"Error with {name}:\n {e}")
 
 
 Variable.update_cookie = update_cookie
 
 
 def init_cache_manager(key="trianer_app"):
-
     with st.empty():
         Variable.cookies = Cache.cookie_manager.get_all(key=key)
 

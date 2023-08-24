@@ -6,8 +6,9 @@ from ..core.labels import gl
 
 
 class Menu:
-    def __init__(self, use_nav_bar=False, beta_mode=False):
+    data = {}
 
+    def __init__(self, use_nav_bar=False, beta_mode=False):
         # specify the primary menu definition
         menu_data = [
             {"id": "athlete", "icon": "💗"},

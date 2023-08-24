@@ -2,8 +2,6 @@ import streamlit as st
 
 from ..variables import variables
 
-# from ..core.labels import gc
-
 
 def get_var_input(key, **kwargs):
     v = variables[key]
