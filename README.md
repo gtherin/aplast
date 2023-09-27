@@ -7,14 +7,14 @@ Athletes should fill their diving performances 📉, their gliding characteristi
 [![CC-by-nc-sa license](https://badgen.net/badge/icon/CC%20by-nc-sa?label=Licence)](https://creativecommons.org/licenses/by-nc-sa/4.0)
 
 
-https://github.com/guydegnol/aplast/assets/82407580/3116c847-bbb2-4f0f-b525-f932c4a091e4
+https://github.com/gtherin/aplast/assets/82407580/3116c847-bbb2-4f0f-b525-f932c4a091e4
 
 
 ### Quick local Installation guide
 
 ```bash
 # 📋 Clone the code from github
-git clone https://github.com/guydegnol/aplast
+git clone https://github.com/gtherin/aplast
 # 🐋 Build the app with docker
 docker build . -t aplast-image
 # 🤿 Launch the web app on the local server (opened on port 8503)
