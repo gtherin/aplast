@@ -10,7 +10,7 @@ def gl(name):
 
 def get_expander():
     return st.expander(
-        f"ℹ️ - {gl('About app')} (📧 [Guillaume](https://www.linkedin.com/in/guillaume-therin-56665217/) [Martino](https://www.linkedin.com/in/martino-trassinelli-89a459277/))",
+        f"ℹ️ - {gl('About app')} (📧 [Martino](https://orcid.org/0000-0003-4414-1801) [Jules](https://orcid.org/0000-0001-6946-5015)) [Guillaume](https://www.linkedin.com/in/guillaume-therin)",
         expanded=False,
     )
 
