@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 from matplotlib.patheffects import withStroke
 
-import os
-
 from . import constants
 
 
