@@ -26,7 +26,7 @@ def get_total_lungs_capacity(height_in_cm: float, is_woman: bool=True) -> float:
     return total_lungs_capacity in liters
     """
 
-    # Source ?
+    # Source: Bibliographie/Normes ERS 93.pdf, P.H. QUANJER, G.J. TAMMELING, J.E. COTES, O.F. PEDERSEN, R. PESLIN, J.C. YERNAULT, Lung volumes and forced ventilatory flows., Eur Resp J 1993;6 suppl 16:15-40
     slope_h, intercept =  (6.60, -5.79) if is_woman else (7.99, -7.08)
 
     # The factor converts cm to meters
@@ -42,7 +42,7 @@ def get_residual_volume(height_in_cm: float, year_of_birth: int, is_woman: bool=
     return residual_volume in liters
     """
 
-    # Source ?
+    # Source: Bibliographie/Normes ERS 93.pdf, P.H. QUANJER, G.J. TAMMELING, J.E. COTES, O.F. PEDERSEN, R. PESLIN, J.C. YERNAULT, Lung volumes and forced ventilatory flows., Eur Resp J 1993;6 suppl 16:15-40
     slope_h, slope_a, intercept =  (1.31, 0.022, -1.23) if is_woman else (1.81, 0.016, -2.0)
 
     # Calculate age with a year uncertainty
@@ -54,7 +54,6 @@ def get_residual_volume(height_in_cm: float, year_of_birth: int, is_woman: bool=
 
 def show_foam_density(df):
 
-    # df = get_data(raw=True)
     ts = constants.r_nfoam * df["thickness_suit"] / 1000.0
     df["mass_suit_exp"] = ts
 
