@@ -16,7 +16,8 @@ r_ballast = 11000  # kg/m3
 # density of the neoprene
 r_neo = 1230  # kg/m3
 # density of neoprene foam
-r_nfoam = 170  # kg/m3
+r_nfoam = 190  # kg/m3
+w_linen = 0.5
 
 
 # Get package colors
