@@ -6,7 +6,16 @@ from scipy.optimize import minimize
 from .constants import *
 
 
-def get_volume_tissues(mass_body, mass_ballast, volume_suit, volume_gas, speed_d, speed_a, depth_eq_d, depth_eq_a):
+def get_volume_tissues(
+    mass_body,
+    mass_ballast,
+    volume_suit,
+    volume_gas,
+    speed_d,
+    speed_a,
+    depth_eq_d,
+    depth_eq_a,
+):
     """Calculation of the volume occupied by tissue of the freediver body from
     the descent and ascent critical depth, the depths where the diver stop to swim and start to glide.
 
@@ -30,21 +39,34 @@ def get_volume_tissues(mass_body, mass_ballast, volume_suit, volume_gas, speed_d
     ptot = pressure_eq_a * pressure_eq_d * r_neo * speed2
 
     def get_func(depth):
-        return pressure_0 * r_neo * (r_water - r_nfoam) + depth * g * r_water * (r_water - r_neo) * r_nfoam
+        return (
+            pressure_0 * r_neo * (r_water - r_nfoam)
+            + depth * g * r_water * (r_water - r_neo) * r_nfoam
+        )
 
     Vt = (
         mass_ballast * (1 - r_water / r_ballast)
         - (
             -mass_body * ptot
-            + pressure_0 * r_water * r_neo * (press_speed2_a + press_speed2_d) * volume_gas
-            + (press_speed2_a * get_func(depth_eq_d) + press_speed2_d * get_func(depth_eq_a)) * volume_suit
+            + pressure_0
+            * r_water
+            * r_neo
+            * (press_speed2_a + press_speed2_d)
+            * volume_gas
+            + (
+                press_speed2_a * get_func(depth_eq_d)
+                + press_speed2_d * get_func(depth_eq_a)
+            )
+            * volume_suit
         )
         / ptot
     ) / r_water
     return Vt
 
 
-def get_drag_coefficient(volume_suit, volume_gas, speed_d, speed_a, depth_eq_d, depth_eq_a):
+def get_drag_coefficient(
+    volume_suit, volume_gas, speed_d, speed_a, depth_eq_d, depth_eq_a
+):
     """Calculation of the hydrodynamic drag coefficient (drag = C*speed**2) from
     the descent and ascent critical depth, the depths where the diver stop to swim and start to glide.
 
@@ -67,7 +89,12 @@ def get_drag_coefficient(volume_suit, volume_gas, speed_d, speed_a, depth_eq_d, 
     deltax_eq_a = pressure_eq_a / g / r_water
     deltax_eq_d = pressure_eq_d / g / r_water
 
-    return (depth_eq_d - depth_eq_a) * pressure_0 * volume_toid / (deltax_eq_a * deltax_eq_d * speed2)
+    return (
+        (depth_eq_d - depth_eq_a)
+        * pressure_0
+        * volume_toid
+        / (deltax_eq_a * deltax_eq_d * speed2)
+    )
 
 
 def get_total_work(
@@ -97,7 +124,15 @@ def get_total_work(
 
     force_weight = g * (mass_body + mass_ballast + r_nfoam * volume_suit)
 
-    force_archimede1 = g * r_water * (mass_ballast / r_ballast + (r_nfoam * volume_suit) / r_neo + volume_incompress)
+    force_archimede1 = (
+        g
+        * r_water
+        * (
+            mass_ballast / r_ballast
+            + (r_nfoam * volume_suit) / r_neo
+            + volume_incompress
+        )
+    )
     force_archimede2 = g * r_water * (volume_gas + (1 - r_nfoam / r_neo) * volume_suit)
 
     force_drag_descent = drag_coefficient * speed_descent**2
@@ -174,7 +209,14 @@ class Diver:
 
     def __init__(self, data: dict) -> None:
         self.data = data
-        for c in ["surname", "depth_max", "mass_body", "mass_ballast", "thickness_suit", "volume_lungs"]:
+        for c in [
+            "surname",
+            "depth_max",
+            "mass_body",
+            "mass_ballast",
+            "thickness_suit",
+            "volume_lungs",
+        ]:
             setattr(self, c, data[c])
 
         self.time_descent = self.get_time("descent")
@@ -192,7 +234,9 @@ class Diver:
 
         # Get suite volume in m3
         self.volume_suit = (
-            data["volume_suit"] if "volume_suit" in data else (surface_suit := 2) * self.thickness_suit / 1000.0
+            data["volume_suit"]
+            if "volume_suit" in data
+            else (surface_suit := 2) * self.thickness_suit / 1000.0
         )
 
         # Tissue volume estimation
@@ -328,7 +372,9 @@ class Diver:
         mb_minusC = resminusC.x[0]
 
         mass_ballast_mean = (mb_plusVt + mb_minusVt + mb_plusC + mb_minusC) / 4
-        mass_ballast_err = np.sqrt((mass_ballast_mean - mb_plusVt) ** 2 + (mass_ballast_mean - mb_plusC) ** 2)
+        mass_ballast_err = np.sqrt(
+            (mass_ballast_mean - mb_plusVt) ** 2 + (mass_ballast_mean - mb_plusC) ** 2
+        )
         mass_ballast_proposal = unc.ufloat(mass_ballast_mean, mass_ballast_err)
 
         thickness_suit_best = res.x[1]
@@ -338,7 +384,9 @@ class Diver:
         Tsmm_minusC = resminusC.x[1]
 
         Tsmm_mean = (Tsmm_plusVt + Tsmm_minusVt + Tsmm_plusC + Tsmm_minusC) / 4
-        Tsmm_err = np.sqrt((Tsmm_mean - Tsmm_plusVt) ** 2 + (Tsmm_mean - Tsmm_plusC) ** 2)
+        Tsmm_err = np.sqrt(
+            (Tsmm_mean - Tsmm_plusVt) ** 2 + (Tsmm_mean - Tsmm_plusC) ** 2
+        )
         thickness_suit_proposal = unc.ufloat(Tsmm_mean, Tsmm_err)
 
         # Performance gain
@@ -392,7 +440,9 @@ class Diver:
         elif variable == "speed_factor":
             speed_factors = (index := np.linspace(0.8, 1.2, 10))
         elif variable == "Rt":
-            volume_tissues = (mass_total / r_water) * (index := np.linspace(0.8, 1.2, 10))
+            volume_tissues = (mass_total / r_water) * (
+                index := np.linspace(0.8, 1.2, 10)
+            )
         elif variable == "volume_lungs":
             volume_lungs = (index := np.linspace(2, 10, 20))
         elif variable == "volume_suit":
@@ -424,6 +474,8 @@ class Diver:
         if index is None:
             return total_work
 
-        df = (pd.DataFrame([index, total_work], index=[variable, "Work (Joules)"]).T).set_index(variable)
+        df = (
+            pd.DataFrame([index, total_work], index=[variable, "Work (Joules)"]).T
+        ).set_index(variable)
 
         return df

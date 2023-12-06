@@ -29,7 +29,9 @@ all_cookies = cookie_manager.get_all()
 def update_cookie(key):
     val = st.session_state[key]
     fval = str(val) if type(val) == datetime.time else val
-    cookie_manager.set(key, fval, expires_at=datetime.datetime(year=2023, month=2, day=2))
+    cookie_manager.set(
+        key, fval, expires_at=datetime.datetime(year=2023, month=2, day=2)
+    )
 
 
 aplast.Variable.update_cookie = update_cookie
@@ -58,13 +60,17 @@ def main():
             depth_gliding_descent = aplast.get_var_number("depth_gliding_descent")
 
         with col2:
-            depth_gliding_descent_error = aplast.get_var_number("depth_gliding_descent_error")
+            depth_gliding_descent_error = aplast.get_var_number(
+                "depth_gliding_descent_error"
+            )
 
         with col3:
             depth_gliding_ascent = aplast.get_var_number("depth_gliding_ascent")
 
         with col4:
-            depth_gliding_ascent_error = aplast.get_var_number("depth_gliding_ascent_error")
+            depth_gliding_ascent_error = aplast.get_var_number(
+                "depth_gliding_ascent_error"
+            )
 
     with st.expander("Body specification"):
         col1, col2 = st.columns(2)
@@ -80,23 +86,22 @@ def main():
         with col4:
             thickness_suit = aplast.get_var_number("thickness_suit")
 
-    d = aplast.Diver(
-        data=dict(
-            surname="John Doe",
-            depth_max=depth_max,
-            mass_body=mass_body,
-            mass_ballast=mass_ballast,
-            thickness_suit=thickness_suit,
-            volume_lungs=volume_lungs,
-            time_descent=time_descent,
-            time_ascent=time_ascent,
-            depth_gliding_descent=depth_gliding_descent,
-            depth_gliding_descent_error=depth_gliding_descent_error,
-            depth_gliding_ascent=depth_gliding_ascent,
-            depth_gliding_ascent_error=depth_gliding_ascent_error,
-        )
+    data = dict(
+        surname="John Doe",
+        depth_max=depth_max,
+        mass_body=mass_body,
+        mass_ballast=mass_ballast,
+        thickness_suit=thickness_suit,
+        volume_lungs=volume_lungs / 1000.0,  # Set in in m-3
+        time_descent=time_descent,
+        time_ascent=time_ascent,
+        depth_gliding_descent=depth_gliding_descent,
+        depth_gliding_descent_error=depth_gliding_descent_error,
+        depth_gliding_ascent=depth_gliding_ascent,
+        depth_gliding_ascent_error=depth_gliding_ascent_error,
     )
 
+    d = aplast.Diver(data)
     solution = d.minimize()
     time_total = d.time_descent + d.time_ascent
 
@@ -111,14 +116,15 @@ def main():
         with col4:
             st.metric(
                 "thickness_suit_best",
-                "%s mm" % solution["thickness_suit_best"],
-                "%s mm" % (solution["thickness_suit_best"] - thickness_suit),
+                "%.2f mm" % solution["thickness_suit_best"],
+                "%.2f mm" % (solution["thickness_suit_best"] - thickness_suit),
             )
         with col5:
             st.metric(
                 "Economy of power",
                 "%.0f W" % (solution["work_best"] / time_total),
-                "%.4f %% " % (100 * (solution["work_best"] - solution["work"]) / solution["work"]),
+                "%.4f %% "
+                % (100 * (solution["work_best"] - solution["work"]) / solution["work"]),
                 delta_color="inverse",
             )
 
@@ -126,7 +132,8 @@ def main():
             st.metric(
                 "Energy spent",
                 "%.0f kJ" % (solution["work_best"] / 1000),
-                "%.4f %%" % (100 * (solution["work_best"] - solution["work"]) / solution["work"]),
+                "%.4f %%"
+                % (100 * (solution["work_best"] - solution["work"]) / solution["work"]),
                 delta_color="inverse",
             )
     # st.write("solution", solution)
@@ -134,12 +141,17 @@ def main():
     with st.expander("Trajectory", expanded=True):
         diver = d.data
         diver.update(
-            {"mass_ballast": solution["mass_ballast_best"], "thickness_suit": solution["thickness_suit_best"]}
+            {
+                "mass_ballast": solution["mass_ballast_best"],
+                "thickness_suit": solution["thickness_suit_best"],
+            }
         )
         d_best = aplast.Diver(data=diver)
 
         # st.plotly_chart(aplast.trajectory.show_dynamic(d))
-        st.pyplot(aplast.trajectory.show(d))
+        p = aplast.trajectory.show(d)
+        if p is not None:
+            st.pyplot(p)
         # st.pyplot(aplast.trajectory.show(d_best))
 
 
