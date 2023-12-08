@@ -92,7 +92,7 @@ def main():
         mass_body=mass_body,
         mass_ballast=mass_ballast,
         thickness_suit=thickness_suit,
-        volume_lungs=volume_lungs / 1000.0,  # Set in in m-3
+        volume_lungs=volume_lungs / 1000.0,  # Set in m-3
         time_descent=time_descent,
         time_ascent=time_ascent,
         depth_gliding_descent=depth_gliding_descent,
